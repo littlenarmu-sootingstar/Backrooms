@@ -857,9 +857,10 @@ function bfs(sx,sy,tx,ty){if(sx===tx&&sy===ty)return[tx+.5,ty+.5];const start=sy
 function stepTo(m,tx,ty,sp,dt){let gx=tx,gy=ty;if(!hasLOS(m.x,m.y,tx,ty)){m.pathT-=dt;if(m.pathT<=0||m.nx===null){const n=bfs(m.x|0,m.y|0,tx|0,ty|0);if(n){m.nx=n[0];m.ny=n[1];}m.pathT=.25;}if(m.nx!==null){gx=m.nx;gy=m.ny;}}
   const dx=gx-m.x,dy=gy-m.y,l=Math.hypot(dx,dy)||1;m.x+=dx/l*sp*dt;m.y+=dy/l*sp*dt;}
 function updHunter(m,dt){const D=m.D,dx=px-m.x,dy=py-m.y,d=Math.hypot(dx,dy);const los=hasLOS(m.x,m.y,px,py);
+  const df=DF();
   if(D.stun&&state.flash&&!hideRef&&los&&d<7){let da=Math.atan2(m.y-py,m.x-px)-pa;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)<.45&&m.stun<=0){m.stun=2.2*(2-df.spd);noise(.15,.12);}}
   if(m.stun>0){m.stun-=dt;return d;}
-  const df=DF();const wet=D.water?inWater(px,py):true;const sight=(D.sight+(state.flash?D.fsight:0))*df.sight;
+  const wet=D.water?inWater(px,py):true;const sight=(D.sight+(state.flash?D.fsight:0))*df.sight;
   const sees=!hideRef&&los&&wet&&(d<sight||d<D.near*df.sight);const hr=hideRef?0:D.hear[pmove]*df.hear;const hears=hr>0&&d<hr&&wet;
   if(sees||hears){m.last=[px,py];m.seen=0;if(m.mode!=='chase'){m.mode='chase';noise(.5,.2);tone(70,1,'sawtooth',.12);}}else m.seen+=dt;
   if(m.mode==='chase'&&!(sees||hears)&&m.seen>3.2){m.mode='search';m.timer=hideRef?6:4;}
